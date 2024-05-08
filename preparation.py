@@ -37,11 +37,22 @@ def is_english(text):
     english_tokens = [token for token in doc if token.lang_ == 'en']
     return len(english_tokens) > 0.5 * len(doc)
 
+# data_merged['is_english'] = data_merged['comments'].apply(is_english)
+# data_merged = data_merged[data_merged['is_english']].drop(columns='is_english')
+
+# concatenated_comments = data_merged.groupby('id')['comments'].agg(lambda x: '. '.join(x.dropna())).reset_index()
+# concatenated_comments.columns = ['id', 'concatenated_comments']
+
 data_merged['is_english'] = data_merged['comments'].apply(is_english)
 data_merged = data_merged[data_merged['is_english']].drop(columns='is_english')
 
-concatenated_comments = data_merged.groupby('id')['comments'].agg(lambda x: '. '.join(x.dropna())).reset_index()
+# Function to concatenate up to 10 comments
+def concatenate_comments(comments):
+    return '. '.join(comments.dropna()[:10])
+
+concatenated_comments = data_merged.groupby('id')['comments'].agg(concatenate_comments).reset_index()
 concatenated_comments.columns = ['id', 'concatenated_comments']
+
 
 data = pd.merge(concatenated_comments, listing_10, on='id', how='left')
 
