@@ -23,13 +23,13 @@ listing = listing[
        'review_scores_value', 'instant_bookable']
 ]
 
-listing20= listing.head(20)
+listing_10 = listing.head(10)
 
 reviews = pd.read_csv('Data/reviews.csv')   
 reviews.drop(['id', 'reviewer_id'], axis=1, inplace=True)
 reviews.rename(columns={'listing_id': 'id'}, inplace=True)
 
-data_merged20= pd.merge(listing20, reviews, on='id', how='left')
+data_merged = pd.merge(listing_10, reviews, on='id', how='left')
 
 nlp = spacy.load('en_core_web_sm')
 def is_english(text):
@@ -37,10 +37,20 @@ def is_english(text):
     english_tokens = [token for token in doc if token.lang_ == 'en']
     return len(english_tokens) > 0.5 * len(doc)
 
-data_merged20['is_english'] = data_merged20['comments'].apply(is_english)
-data_merged20= data_merged20[data_merged20['is_english']].drop(columns='is_english')
+data_merged['is_english'] = data_merged['comments'].apply(is_english)
+data_merged = data_merged[data_merged['is_english']].drop(columns='is_english')
 
-concatenated_comments = data_merged20.groupby('id')['comments'].agg(lambda x: '. '.join(x.dropna())).reset_index()
+concatenated_comments = data_merged.groupby('id')['comments'].agg(lambda x: '. '.join(x.dropna())).reset_index()
 concatenated_comments.columns = ['id', 'concatenated_comments']
 
-data= pd.merge(concatenated_comments, listing20, on='id', how='left')
+data = pd.merge(concatenated_comments, listing_10, on='id', how='left')
+
+
+# Convert all columns to string
+data_str = data.astype(str)
+
+# Concatenate column names with their values, using ':' for separation and '.' as a separator between fields
+data['combined_columns'] = data_str.apply(lambda row: '. '.join([f"{col}: {val}" for col, val in zip(row.index, row.values)]), axis=1)
+
+# Create a new DataFrame with only 'listing_url' and 'combined_columns'
+final_data = data[['listing_url', 'combined_columns']]
