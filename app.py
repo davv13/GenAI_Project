@@ -55,7 +55,7 @@ def submit_query():
             prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
             prompt = prompt_template.format(context=context_text, question=st.session_state.query_text)
 
-            model = ChatOpenAI(model_name='gpt-3.5-turbo')
+            model = ChatOpenAI(model_name='gpt-4-turbo-2024-04-09')
             query_result = model.predict(prompt)
 
             if len(results) == 0 or results[0][1] < 0.7:
