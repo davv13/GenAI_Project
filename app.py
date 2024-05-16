@@ -9,8 +9,6 @@ from langchain_openai import ChatOpenAI
 from langchain_openai import OpenAIEmbeddings
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.vectorstores import Chroma as ChromaDB
-import sqlite3
-
 
 PERSIST_DIRECTORY = "chromadb/"
 
