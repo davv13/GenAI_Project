@@ -5,6 +5,7 @@ import pandas as pd
 from langchain.schema import Document
 from langchain.vectorstores.chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
+import streamlit as st
 
 from preparation import final_data
 
@@ -12,8 +13,10 @@ CHROMA_PATH = "chromadb"
 
 full_data = final_data
 
-with open('openai_api_key.txt', 'r') as f:
-    os.environ["OPENAI_API_KEY"] = f.read().strip()
+api_key = st.secrets["OPENAI_API_KEY"] if 'OPENAI_API_KEY' in st.secrets else os.getenv('OPENAI_API_KEY')
+if not api_key:
+    st.error("API key not found. Please set it as an environment variable or in secrets.toml.")
+    st.stop()
 
 def main():
     documents = create_documents_from_dataframe(full_data)
