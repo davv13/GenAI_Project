@@ -10,6 +10,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.vectorstores import Chroma as ChromaDB
 
+
 PERSIST_DIRECTORY = "chromadb/"
 
 st.set_page_config(page_title='Hotel Recommendation Assistant')
