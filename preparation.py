@@ -23,25 +23,22 @@ listing = listing[
        'review_scores_value', 'instant_bookable']
 ]
 
-listing_10 = listing.head(10)
+listing_100 = listing.head(100)
 
 reviews = pd.read_csv('Data/reviews.csv')   
 reviews.drop(['id', 'reviewer_id'], axis=1, inplace=True)
 reviews.rename(columns={'listing_id': 'id'}, inplace=True)
 
-data_merged = pd.merge(listing_10, reviews, on='id', how='left')
+data_merged = pd.merge(listing_100, reviews, on='id', how='left')
 
 nlp = spacy.load('en_core_web_sm')
+
 def is_english(text):
+    if pd.isna(text):
+        return False
     doc = nlp(text)
     english_tokens = [token for token in doc if token.lang_ == 'en']
     return len(english_tokens) > 0.5 * len(doc)
-
-# data_merged['is_english'] = data_merged['comments'].apply(is_english)
-# data_merged = data_merged[data_merged['is_english']].drop(columns='is_english')
-
-# concatenated_comments = data_merged.groupby('id')['comments'].agg(lambda x: '. '.join(x.dropna())).reset_index()
-# concatenated_comments.columns = ['id', 'concatenated_comments']
 
 data_merged['is_english'] = data_merged['comments'].apply(is_english)
 data_merged = data_merged[data_merged['is_english']].drop(columns='is_english')
@@ -54,7 +51,7 @@ concatenated_comments = data_merged.groupby('id')['comments'].agg(concatenate_co
 concatenated_comments.columns = ['id', 'concatenated_comments']
 
 
-data = pd.merge(concatenated_comments, listing_10, on='id', how='left')
+data = pd.merge(concatenated_comments, listing_100, on='id', how='left')
 
 
 # Convert all columns to string
