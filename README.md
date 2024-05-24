@@ -7,8 +7,7 @@ To get this project up and running on your local machine, follow these steps:
 1. Prerequisites
 - Ensure you have Python 3.8 or higher installed on your machine.
 2. Clone the Repository
-Start by cloning the repository to your local machine with this:
-- `git clone https://github.com/sonahakobyannn/Hotel_Recommendation_system.git`
+- Start by cloning the repository to your local machine.
 3. Install Dependencies
 This project relies on several Python libraries. Install them using pip:
 - `pip install -r requirements.txt`
